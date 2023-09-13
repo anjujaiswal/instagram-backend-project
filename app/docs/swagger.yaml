@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: Node Project
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+  # - url: http://localhost:5600
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: Bearer
+    ApiKeyAuth:        # arbitrary name for the security scheme
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: X-API-KEY  
+
+paths:
+  /api/v1/auth/user/login:
+    post:
+      tags:
+        - auth
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: anju@yopmail.com
+                password: pass
+      security:
+        - bearerAuth: []
+        - ApiKeyAuth: []
+      parameters:
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+          example: en
+        # - name: x-api-key
+        #   in: header
+        #   schema:
+        #     type: string
+        #   example: >-
+        #     asdiauhdiaudhaksdhbaiydbauibdjshdbaisygdyuagsdhbsadbajbshd
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/user/signup:
+    post:
+      tags:
+        - auth
+      summary: signup
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                fullname:
+                  type: string
+                password:
+                  type: string
+                phoneNumber:
+                  type: string
+                profileImage:
+                  type: string
+                  format: base64
+            required: 
+              - fullname
+              - email
+              - password
+              - phoneNumber
+            encoding: # The same level as schema
+              profileImage: # Property name (see above)
+                contentType: image/png, image/jpeg, image/jpg
+              example:
+                email: anju@yopmail.com
+                fullname: anju
+                profileImage: image
+                phone_no: '987584849'
+                password: pass
+    
+      parameters:
+        - name: x-api-key
+          in: header
+          schema:
+            type: string
+          example: >-
+            asdiauhdiaudhaksdhbaiydbauibdjshdbaisygdyuagsdhbsadbajbshd
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+          example: en
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/user/logout:
+    patch:
+      tags:
+        - auth
+      summary: logout
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: x-api-key
+          in: header
+          schema:
+            type: string
+          example: >-
+            asdiauhdiaudhaksdhbaiydbauibdjshdbaisygdyuagsdhbsadbajbshd
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
